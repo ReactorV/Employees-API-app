@@ -1,7 +1,7 @@
 /*import express from 'express';
 import mysql from 'mysql';
 import morgan from 'morgan';
-import bodyParser from 'bodyParser';*/
+import bodyParser from 'body-Parser';*/
 
 const express = require('express');
 const morgan = require('morgan');

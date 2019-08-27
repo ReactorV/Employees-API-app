@@ -8,33 +8,18 @@ const connection = mysql.createConnection({
     database: 'test'
 });
 
-const searchEmployee = (method: string, request: any, response: any) => {
-    let selectQuery = "SELECT * FROM ?? WHERE ?? LIKE '%" + request.query.search + "%'";
-    let inserts = ['employees', 'name'];
-    let query = mysql.format(selectQuery, inserts);
-
-    connection.query(query, (err: string, rows: any, fields: any) => {
-        if (err) {
-            console.error("Failed to query for users: " + err);
-            return;
-        }
-
-        let searchData = [];
-        for (let i = 0; i < rows.length; i++) {
-            searchData.push(rows[i]) //надо дработать с node database json
-        }
-
-        response.end(JSON.stringify(searchData));
-    });
-};
-
 const employees = (method: string, request: any, response: any) => {
     const gender = request.query.gender;
     let querySearch = request.query.search;
-    let queryString = `SELECT * FROM ?? WHERE ?? LIKE '%${querySearch}%' AND gender = ${gender}`;
-    const inserts = ['employee', 'name'];
-    const query = mysql.format(queryString, inserts);
+    const likeQuerySearch = `'%${querySearch}%'`;
+    const employeeRow = 'employee.employeeID';
+    const addressRow = 'address.employeeID';
 
+    let queryString = `SELECT * FROM ?? WHERE ?? LIKE ${likeQuerySearch} AND ?? = ? AND ?? = ??`;
+    const inserts = [['employee','address'],'name','gender', gender, employeeRow, addressRow];
+
+    const query = mysql.format(queryString, inserts);
+    console.log(query);
     connection.query(query, (err: any, rows: any, fields: any) => {
         if (err) {
             console.log("Failed to query for users: " + err);
@@ -42,7 +27,17 @@ const employees = (method: string, request: any, response: any) => {
             return;
         }
 
-        response.json(rows);
+        const employees = rows.map((row: any) => {
+            return {
+                ID: row.employeeID,
+                name: row.name,
+                position: row.position,
+                gender: row.gender,
+                address: row.address
+            }
+        });
+
+        response.json(employees);
     });
 };
 

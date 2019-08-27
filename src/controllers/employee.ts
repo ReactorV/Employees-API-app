@@ -10,7 +10,7 @@ const employee = (method: string, request: any, response: any) => {
     });
 
     const userId = request.params.id;
-    const queryString = `SELECT * FROM employees WHERE id LIKE '${userId}';`;
+    const queryString = `SELECT * FROM employee WHERE employeeID LIKE '${userId}';`;
 
     connection.query(queryString, [userId], (err: any, rows: any, fields: any) => {
         if (err) {
