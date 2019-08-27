@@ -1,7 +1,7 @@
 /*import mysql from 'mysql';*/
 const mysql = require('mysql');
 
-const employee = (method, request, response) => {
+const employee = (method: string, request: any, response: any) => {
     const connection = mysql.createConnection({
         host: 'localhost',
         user: 'root',
@@ -10,9 +10,9 @@ const employee = (method, request, response) => {
     });
 
     const userId = request.params.id;
-    const queryString = "SELECT * FROM employees WHERE id = ?";
+    const queryString = `SELECT * FROM employees WHERE id LIKE '${userId}';`;
 
-    connection.query(queryString, [userId], (err, rows, fields) => {
+    connection.query(queryString, [userId], (err: any, rows: any, fields: any) => {
         if (err) {
             console.log("Failed to query for users: " + err);
             response.end();
